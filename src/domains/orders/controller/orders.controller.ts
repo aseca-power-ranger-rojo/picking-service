@@ -26,6 +26,6 @@ ordersController.patch('/:orderId/:status', async(req: Request, res: Response) =
 
   if (status === undefined) throw new BadRequestException('Invalid status');
   await service.updateOrderStatus(req.params.orderId, status as OrderStatus)
-
+  // TODO: Request to Control Tower when completed
   return res.status(httpStatus.NO_CONTENT).json();
 });
