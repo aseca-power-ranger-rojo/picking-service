@@ -28,7 +28,7 @@ model Picker {
 model OrderAssignment {
   id        String      @id @default(uuid()) @db.Uuid
 
-  orderId   String      @db.Uuid
+  orderId   String      @db.Uuid @unique
   pickerId  String      @db.Uuid
   status    OrderStatus @default(PENDING)
 

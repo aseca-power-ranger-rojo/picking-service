@@ -5,10 +5,15 @@ import { OrdersRepository } from '../repository';
 import httpStatus from 'http-status';
 import { GetOrderDTO, CreateOrderDTO } from '../dto';
 import { OrderStatus } from '@prisma/client';
+import { PickersService } from '@domains/pickers/service';
+import { PickersRepository } from '@domains/pickers/repository';
 
 export const ordersController = Router();
 
-const service: OrdersService = new OrdersService(new OrdersRepository(db))
+const service: OrdersService = new OrdersService(
+  new OrdersRepository(db),
+  new PickersService(new PickersRepository(db))
+)
 
 ordersController.get('/', async(req: Request, res: Response) => {
   const orders: GetOrderDTO[] = await service.getOrders();
@@ -17,8 +22,8 @@ ordersController.get('/', async(req: Request, res: Response) => {
   
 ordersController.post('/', BodyValidation(CreateOrderDTO),  async(req: Request, res: Response) => {
   const data = req.body;
-  await service.createOrder(data);
-  return res.status(httpStatus.CREATED).json();
+  const order = await service.createOrder(data);
+  return res.status(httpStatus.CREATED).json({ id: order.id });
 });
   
 ordersController.patch('/:orderId/:status', async(req: Request, res: Response) => {
@@ -26,6 +31,6 @@ ordersController.patch('/:orderId/:status', async(req: Request, res: Response) =
 
   if (status === undefined) throw new BadRequestException('Invalid status');
   await service.updateOrderStatus(req.params.orderId, status as OrderStatus)
-  // TODO: Request to Control Tower when completed
+  
   return res.status(httpStatus.NO_CONTENT).json();
 });

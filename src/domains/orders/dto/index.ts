@@ -6,10 +6,6 @@ export class CreateOrderDTO {
     @IsNotEmpty()
     @IsUUID()
     orderId!: string;
-
-    @IsNotEmpty()
-    @IsUUID()
-    pickerId!: string;
 }
 
 export class GetOrderDTO {

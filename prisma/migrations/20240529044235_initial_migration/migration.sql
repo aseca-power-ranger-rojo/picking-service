@@ -24,5 +24,8 @@ CREATE TABLE "OrderAssignment" (
     CONSTRAINT "OrderAssignment_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateIndex
+CREATE UNIQUE INDEX "OrderAssignment_orderId_key" ON "OrderAssignment"("orderId");
+
 -- AddForeignKey
 ALTER TABLE "OrderAssignment" ADD CONSTRAINT "OrderAssignment_pickerId_fkey" FOREIGN KEY ("pickerId") REFERENCES "Picker"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
