@@ -3,6 +3,7 @@ import { CreateOrderDTO, GetOrderDTO } from "../dto";
 import { OrdersRepository } from "../repository";
 import { PickersService } from "@domains/pickers/service";
 import axios from "axios";
+import { BadRequestException } from "@utils";
 
 const controlTowerURL = process.env.CONTROL_TOWER_URL + '/api/orders';
 
@@ -24,7 +25,9 @@ export class OrdersService {
 
   async updateOrderStatus(orderId: string, status: OrderStatus): Promise<void> {
     await this.repository.updateOrderStatus(orderId, status);
-    await axios.patch(`${controlTowerURL}/${orderId}/PICKING/${status}`);
+    await axios.patch(`${controlTowerURL}/${orderId}/PICKING/${status}`).catch((error) => {
+      throw new BadRequestException(error.response.data.message)
+    });
   }
 
 }
